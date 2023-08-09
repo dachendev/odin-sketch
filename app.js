@@ -2,8 +2,21 @@
 const gridContainer = document.getElementById("gridContainer");
 
 // hover effect
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function randomColor(alpha = 1) {
+  const r = randomInt(0, 255);
+  const g = randomInt(0, 255);
+  const b = randomInt(0, 255);
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 function paint(e) {
-  e.target.classList.add("painted");
+  const item = e.target;
+  item.style.backgroundColor = randomColor();
 }
 
 function createGrid({ parent, size = 16 }) {
