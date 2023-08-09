@@ -1,3 +1,14 @@
+// track if mouse is clicked for better drawing
+let mouseDown = false;
+
+document.body.addEventListener("mousedown", function (e) {
+  mouseDown = true;
+});
+
+document.body.addEventListener("mouseup", function (e) {
+  mouseDown = false;
+});
+
 // create a 16x16 grid of square divs
 const gridContainer = document.getElementById('gridContainer');
 
@@ -49,7 +60,14 @@ function createGrid(parent, options = {}) {
     for (let x = 0; x < size; x++) {
       const item = document.createElement('div');
       item.classList.add('grid-item');
-      item.addEventListener('mouseenter', paint);
+
+      item.addEventListener('mousedown', paint);
+      item.addEventListener('mouseenter', function (e) {
+        // only paint if the mouse is down
+        if (mouseDown) {
+          paint(e);
+        }
+      });
 
       row.append(item);
     }
