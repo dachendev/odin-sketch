@@ -1,5 +1,5 @@
 // create a 16x16 grid of square divs
-const gridContainer = document.getElementById("gridContainer");
+const gridContainer = document.getElementById('gridContainer');
 
 // hover effect
 function randomInt(min, max) {
@@ -24,17 +24,17 @@ function paint(e) {
 function createGrid(parent, options = {}) {
   const size = options.size || 16;
 
-  const container = document.createElement("div");
-  container.classList.add("grid");
+  const container = document.createElement('div');
+  container.classList.add('grid');
 
   for (let y = 0; y < size; y++) {
-    const row = document.createElement("div");
-    row.classList.add("grid-row");
+    const row = document.createElement('div');
+    row.classList.add('grid-row');
 
     for (let x = 0; x < size; x++) {
-      const item = document.createElement("div");
-      item.classList.add("grid-item");
-      item.addEventListener("mouseenter", paint);
+      const item = document.createElement('div');
+      item.classList.add('grid-item');
+      item.addEventListener('mouseenter', paint);
 
       row.append(item);
     }
@@ -49,7 +49,7 @@ createGrid(gridContainer);
 
 // helper fn to prompt and validate numeric input
 function promptNumeric(message, options = {}) {
-  const defaultValue = options.defaultValue || "";
+  const defaultValue = options.defaultValue || '';
   const min = options.min;
   const max = options.max;
 
@@ -67,8 +67,8 @@ function promptNumeric(message, options = {}) {
       break; // cancel prompt
     }
 
-    if (n == "") {
-      error = "Input cannot be empty";
+    if (n == '') {
+      error = 'Input cannot be empty';
       continue;
     }
 
@@ -76,7 +76,7 @@ function promptNumeric(message, options = {}) {
 
     if (isNaN(n)) {
       // not a number
-      error = "Not a number";
+      error = 'Not a number';
       continue;
     }
 
@@ -99,7 +99,7 @@ function promptNumeric(message, options = {}) {
 }
 
 // button to resize grid
-const resizeButton = document.getElementById("resizeButton");
+const resizeButton = document.getElementById('resizeButton');
 const maxSize = 100;
 
 function resizeGrid(e) {
@@ -114,9 +114,9 @@ function resizeGrid(e) {
   }
 
   // destroy current grid
-  gridContainer.innerText = "";
+  gridContainer.innerText = '';
 
   createGrid(gridContainer, { size });
 }
 
-resizeButton.addEventListener("click", resizeGrid);
+resizeButton.addEventListener('click', resizeGrid);
