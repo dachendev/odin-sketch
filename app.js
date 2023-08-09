@@ -9,9 +9,6 @@ document.body.addEventListener("mouseup", function (e) {
   mouseDown = false;
 });
 
-// create a 16x16 grid of square divs
-const gridContainer = document.getElementById('gridContainer');
-
 // hover effect
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -47,6 +44,10 @@ function paint(e) {
   item.style.backgroundColor = `rgb(${item.dataset.color}, ${item.dataset.alpha})`;
 }
 
+// create a 16x16 grid of square divs
+const gridContainer = document.getElementById('gridContainer');
+let currentSize;
+
 function createGrid(parent, options = {}) {
   const size = options.size || 16;
 
@@ -76,6 +77,7 @@ function createGrid(parent, options = {}) {
   }
 
   parent.append(container);
+  currentSize = size;
 }
 
 createGrid(gridContainer);
@@ -135,6 +137,10 @@ function promptNumeric(message, options = {}) {
 const resizeButton = document.getElementById('resizeButton');
 const maxSize = 100;
 
+function destroyGrid() {
+  gridContainer.innerText = '';
+}
+
 function resizeGrid(e) {
   // ask user for size
   const size = promptNumeric(`Enter a number from 0 to ${maxSize}.`, {
@@ -147,9 +153,23 @@ function resizeGrid(e) {
   }
 
   // destroy current grid
-  gridContainer.innerText = '';
+  destroyGrid();
 
+  // create a grid using the new size
   createGrid(gridContainer, { size });
 }
 
 resizeButton.addEventListener('click', resizeGrid);
+
+// button to reset grid
+const resetButton = document.getElementById("resetButton");
+
+function resetGrid(e) {
+  // destroy current grid
+  destroyGrid();
+
+  // create a grid using current size
+  createGrid(gridContainer, { size: currentSize });
+}
+
+resetButton.addEventListener("click", resetGrid);
