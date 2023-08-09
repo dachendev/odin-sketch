@@ -21,3 +21,11 @@ function createGrid({ parent } = {}) {
 }
 
 createGrid({ parent: document.getElementById("root") });
+
+// hover effect
+function handleMouseEnter(e) {
+  e.target.classList.add("painted");
+}
+
+document.querySelectorAll(".grid-item")
+  .forEach((item) => item.addEventListener("mouseenter", handleMouseEnter));

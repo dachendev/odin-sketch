@@ -24,3 +24,7 @@ body {
   flex: 1;
   border: 1px solid #DADADA;
 }
+
+.grid-item.painted {
+  background-color: #808080;
+}
