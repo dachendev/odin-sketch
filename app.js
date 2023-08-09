@@ -1,15 +1,23 @@
 // create a 16x16 grid of square divs
-function createGrid({ parent } = {}) {
+const gridContainer = document.getElementById("gridContainer");
+
+// hover effect
+function paint(e) {
+  e.target.classList.add("painted");
+}
+
+function createGrid({ parent, size } = {}) {
   const container = document.createElement("div");
   container.classList.add("grid");
 
-  for (let y = 0; y < 16; y++) {
+  for (let y = 0; y < size; y++) {
     const row = document.createElement("div");
     row.classList.add("grid-row");
 
-    for (let x = 0; x < 16; x++) {
+    for (let x = 0; x < size; x++) {
       const item = document.createElement("div");
       item.classList.add("grid-item");
+      item.addEventListener("mouseenter", paint);
 
       row.append(item);
     }
@@ -20,12 +28,19 @@ function createGrid({ parent } = {}) {
   parent.append(container);
 }
 
-createGrid({ parent: document.getElementById("root") });
+createGrid({ parent: gridContainer, size: 16 });
 
-// hover effect
-function handleMouseEnter(e) {
-  e.target.classList.add("painted");
+// button to resize grid
+const resizeButton = document.getElementById("resizeButton");
+const maxSize = 100;
+
+function resizeGrid(e) {
+  const size = prompt("Enter a new grid size.");
+
+  // destroy current grid
+  gridContainer.innerText = "";
+
+  createGrid({ parent: gridContainer, size: size });
 }
 
-document.querySelectorAll(".grid-item")
-  .forEach((item) => item.addEventListener("mouseenter", handleMouseEnter));
+resizeButton.addEventListener("click", resizeGrid);

@@ -8,6 +8,11 @@ body {
   margin: 0;
 }
 
+button {
+  font-family: inherit;
+  font-size: 100%;
+}
+
 .grid {
   display: flex;
   flex-direction: column;
