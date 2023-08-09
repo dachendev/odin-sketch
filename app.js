@@ -6,19 +6,34 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function randomColor(options = {}) {
-  const alpha = options.alpha || 1;
-
+function randomColor() {
   const r = randomInt(0, 255);
   const g = randomInt(0, 255);
   const b = randomInt(0, 255);
 
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  return `${r}, ${g}, ${b}`;
 }
 
 function paint(e) {
   const item = e.target;
-  item.style.backgroundColor = randomColor();
+
+  if (!item.dataset.color) {
+    item.dataset.color = randomColor();
+  }
+
+  if (!item.dataset.alpha) {
+    item.dataset.alpha = "0";
+  }
+
+  let alpha = parseFloat(item.dataset.alpha);
+
+  if (alpha < 1) {
+    // increment by 10%
+    alpha = alpha + 0.1;
+    item.dataset.alpha = alpha.toFixed(1);
+  }
+
+  item.style.backgroundColor = `rgb(${item.dataset.color}, ${item.dataset.alpha})`;
 }
 
 function createGrid(parent, options = {}) {
