@@ -1,3 +1,35 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
+}
+
+button {
+  font-family: inherit;
+  font-size: 100%;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  width: 640px;
+  height: 640px;
+}
+
+.grid-row {
+  flex: 1;
+  display: flex;
+}
+
+.grid-item {
+  flex: 1;
+  border: 1px solid #DADADA;
+}
+
+.grid-item.painted {
+  background-color: #808080;
 }
