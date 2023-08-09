@@ -6,7 +6,7 @@ function paint(e) {
   e.target.classList.add("painted");
 }
 
-function createGrid({ parent, size } = {}) {
+function createGrid({ parent, size = 16 }) {
   const container = document.createElement("div");
   container.classList.add("grid");
 
@@ -28,14 +28,75 @@ function createGrid({ parent, size } = {}) {
   parent.append(container);
 }
 
-createGrid({ parent: gridContainer, size: 16 });
+createGrid({ parent: gridContainer });
+
+// helper fn to prompt and validate numeric input
+function promptNumeric({
+  message,
+  defaultValue = "",
+  min = null,
+  max = null,
+}) {
+  let n;
+  let error;
+
+  while (true) {
+    if (error) {
+      n = prompt(`${message}\nError: ${error}`, defaultValue);
+    } else {
+      n = prompt(message, defaultValue);
+    }
+
+    if (!n) {
+      break; // cancel prompt
+    }
+
+    if (n == "") {
+      error = "Input cannot be empty";
+      continue;
+    }
+
+    n = parseInt(n, 10);
+
+    if (isNaN(n)) {
+      // not a number
+      error = "Not a number";
+      continue;
+    }
+
+    if (min && n < min) {
+      // less than min
+      error = `Number cannot be less than ${min}`;
+      continue;
+    }
+
+    if (max && n > max) {
+      // greater than max
+      error = `Number cannot be greater than ${max}`;
+      continue;
+    }
+
+    break;
+  }
+
+  return n;
+}
 
 // button to resize grid
 const resizeButton = document.getElementById("resizeButton");
 const maxSize = 100;
 
 function resizeGrid(e) {
-  const size = prompt("Enter a new grid size.");
+  // ask user for size
+  const size = promptNumeric({
+    message: `Enter a number from 0 to ${maxSize}.`,
+    min: 0,
+    max: 100,
+  });
+
+  if (!size) {
+    return;
+  }
 
   // destroy current grid
   gridContainer.innerText = "";
