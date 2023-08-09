@@ -1,36 +1,74 @@
-// create a 16x16 grid of square divs
-const gridContainer = document.getElementById("gridContainer");
+// track if mouse is clicked for better drawing
+let mouseDown = false;
+
+document.body.addEventListener("mousedown", function (e) {
+  mouseDown = true;
+});
+
+document.body.addEventListener("mouseup", function (e) {
+  mouseDown = false;
+});
 
 // hover effect
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function randomColor(alpha = 1) {
+function randomColor() {
   const r = randomInt(0, 255);
   const g = randomInt(0, 255);
   const b = randomInt(0, 255);
 
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  return `${r}, ${g}, ${b}`;
 }
 
 function paint(e) {
   const item = e.target;
-  item.style.backgroundColor = randomColor();
+
+  if (!item.dataset.color) {
+    item.dataset.color = randomColor();
+  }
+
+  if (!item.dataset.alpha) {
+    item.dataset.alpha = "0";
+  }
+
+  let alpha = parseFloat(item.dataset.alpha);
+
+  if (alpha < 1) {
+    // increment by 10%
+    alpha = alpha + 0.1;
+    item.dataset.alpha = alpha.toFixed(1);
+  }
+
+  item.style.backgroundColor = `rgb(${item.dataset.color}, ${item.dataset.alpha})`;
 }
 
-function createGrid({ parent, size = 16 }) {
-  const container = document.createElement("div");
-  container.classList.add("grid");
+// create a 16x16 grid of square divs
+const gridContainer = document.getElementById('gridContainer');
+let currentSize;
+
+function createGrid(parent, options = {}) {
+  const size = options.size || 16;
+
+  const container = document.createElement('div');
+  container.classList.add('grid');
 
   for (let y = 0; y < size; y++) {
-    const row = document.createElement("div");
-    row.classList.add("grid-row");
+    const row = document.createElement('div');
+    row.classList.add('grid-row');
 
     for (let x = 0; x < size; x++) {
-      const item = document.createElement("div");
-      item.classList.add("grid-item");
-      item.addEventListener("mouseenter", paint);
+      const item = document.createElement('div');
+      item.classList.add('grid-item');
+
+      item.addEventListener('mousedown', paint);
+      item.addEventListener('mouseenter', function (e) {
+        // only paint if the mouse is down
+        if (mouseDown) {
+          paint(e);
+        }
+      });
 
       row.append(item);
     }
@@ -39,17 +77,17 @@ function createGrid({ parent, size = 16 }) {
   }
 
   parent.append(container);
+  currentSize = size;
 }
 
-createGrid({ parent: gridContainer });
+createGrid(gridContainer);
 
 // helper fn to prompt and validate numeric input
-function promptNumeric({
-  message,
-  defaultValue = "",
-  min = null,
-  max = null,
-}) {
+function promptNumeric(message, options = {}) {
+  const defaultValue = options.defaultValue || '';
+  const min = options.min;
+  const max = options.max;
+
   let n;
   let error;
 
@@ -64,8 +102,8 @@ function promptNumeric({
       break; // cancel prompt
     }
 
-    if (n == "") {
-      error = "Input cannot be empty";
+    if (n == '') {
+      error = 'Input cannot be empty';
       continue;
     }
 
@@ -73,7 +111,7 @@ function promptNumeric({
 
     if (isNaN(n)) {
       // not a number
-      error = "Not a number";
+      error = 'Not a number';
       continue;
     }
 
@@ -96,25 +134,42 @@ function promptNumeric({
 }
 
 // button to resize grid
-const resizeButton = document.getElementById("resizeButton");
+const resizeButton = document.getElementById('resizeButton');
 const maxSize = 100;
+
+function destroyGrid() {
+  gridContainer.innerText = '';
+}
 
 function resizeGrid(e) {
   // ask user for size
-  const size = promptNumeric({
-    message: `Enter a number from 0 to ${maxSize}.`,
+  const size = promptNumeric(`Enter a number from 0 to ${maxSize}.`, {
     min: 0,
-    max: 100,
+    max: maxSize,
   });
 
   if (!size) {
-    return;
+    return; // cancel
   }
 
   // destroy current grid
-  gridContainer.innerText = "";
+  destroyGrid();
 
-  createGrid({ parent: gridContainer, size: size });
+  // create a grid using the new size
+  createGrid(gridContainer, { size });
 }
 
-resizeButton.addEventListener("click", resizeGrid);
+resizeButton.addEventListener('click', resizeGrid);
+
+// button to reset grid
+const resetButton = document.getElementById("resetButton");
+
+function resetGrid(e) {
+  // destroy current grid
+  destroyGrid();
+
+  // create a grid using current size
+  createGrid(gridContainer, { size: currentSize });
+}
+
+resetButton.addEventListener("click", resetGrid);
