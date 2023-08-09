@@ -6,7 +6,9 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function randomColor(alpha = 1) {
+function randomColor(options = {}) {
+  const alpha = options.alpha || 1;
+
   const r = randomInt(0, 255);
   const g = randomInt(0, 255);
   const b = randomInt(0, 255);
@@ -19,7 +21,9 @@ function paint(e) {
   item.style.backgroundColor = randomColor();
 }
 
-function createGrid({ parent, size = 16 }) {
+function createGrid(parent, options = {}) {
+  const size = options.size || 16;
+
   const container = document.createElement("div");
   container.classList.add("grid");
 
@@ -41,15 +45,14 @@ function createGrid({ parent, size = 16 }) {
   parent.append(container);
 }
 
-createGrid({ parent: gridContainer });
+createGrid(gridContainer);
 
 // helper fn to prompt and validate numeric input
-function promptNumeric({
-  message,
-  defaultValue = "",
-  min = null,
-  max = null,
-}) {
+function promptNumeric(message, options = {}) {
+  const defaultValue = options.defaultValue || "";
+  const min = options.min;
+  const max = options.max;
+
   let n;
   let error;
 
@@ -101,20 +104,19 @@ const maxSize = 100;
 
 function resizeGrid(e) {
   // ask user for size
-  const size = promptNumeric({
-    message: `Enter a number from 0 to ${maxSize}.`,
+  const size = promptNumeric(`Enter a number from 0 to ${maxSize}.`, {
     min: 0,
-    max: 100,
+    max: maxSize,
   });
 
   if (!size) {
-    return;
+    return; // cancel
   }
 
   // destroy current grid
   gridContainer.innerText = "";
 
-  createGrid({ parent: gridContainer, size: size });
+  createGrid(gridContainer, { size });
 }
 
 resizeButton.addEventListener("click", resizeGrid);
